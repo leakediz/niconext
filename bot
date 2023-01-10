@@ -1,0 +1,107 @@
+local Library = loadstring(game:HttpGet('https://raw.githubusercontent.com/Rain-Design/PPHUD/main/Library.lua'))()
+local Flags = Library.Flags
+local GameName = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
+
+local NotificationHolder = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Module.Lua"))()
+local Notification = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Client.Lua"))()
+
+local Window = Library:Window({
+    Text = GameName
+ })
+ 
+ local Tab = Window:Tab({
+    Text = "COSTED"
+ })
+ 
+ local Section = Tab:Section({
+    Text = "Main"
+ })
+ 
+ Section:Check({
+     Text = "No VHS effect",
+     Callback = function(State)
+        game:GetService("Players").LocalPlayer.PlayerGui.vhs.Enabled = State
+     end
+  })
+
+  Section:Check({
+    Text = "No Black effect",
+    Callback = function(State)
+        game:GetService("Players").LocalPlayer.PlayerGui.black.Enabled = State
+    end
+ })
+
+ Section:Check({
+    Text = "No Vignette effect",
+    Callback = function(State)
+        game:GetService("Players").LocalPlayer.PlayerGui.vignette.Enabled = State
+    end
+ })
+
+ Section:Check({
+    Text = "Health GUI",
+    Callback = function(State)
+        game:GetService("Players").LocalPlayer.PlayerGui.health.Enabled = State
+    end
+ })
+
+ Section:Check({
+    Text = "Kill Feed UI",
+    Callback = function(State)
+        game:GetService("Players").LocalPlayer.PlayerGui.killfeed.Enabled = State
+    end
+ })
+
+ local Section1 = Tab:Section({
+    Text = "Misc",
+    Side = "Right"
+ })
+
+ Section1:Check({
+    Text = "Auto Farm",
+    Callback = function(State)
+        local TweenService = game:GetService("TweenService")
+        local Tw = TweenService:Create(game.Players.LocalPlayer.Character.HumanoidRootPart, TweenInfo.new(5, Enum.EasingStyle.Linear, Enum.EasingDirection.Out,0,false,0), 
+        {CFrame = CFrame.new(-299, 51, 124)}):Play()   
+        wait(2)               
+        for i,v in pairs(game:GetService("Workspace").bots:GetDescendants()) do
+            if v:IsA("Part") and v.Name == "HumanoidRootPart" then
+                v.Anchored = State
+            end
+        end
+    end
+ })
+
+ local function keydown(key)
+    return game:GetService("UserInputService"):IsKeyDown(key)
+ end
+   local Flying = false
+   Section1:Check({
+    Text = "Fly",
+    Callback = function(State)
+        Flying = State
+        if State== false then return end
+        while Flying do
+            local move = game.Players.LocalPlayer.Character.Humanoid.MoveDirection * (_G.Speeed) * 4
+            if keydown(Enum.KeyCode.Space) then
+                game.Players.LocalPlayer.Character.Humanoid.RootPart.Velocity = Vector3.new(0,55,0) + move
+            elseif keydown(Enum.KeyCode.C) then
+                game.Players.LocalPlayer.Character.Humanoid.RootPart.Velocity = Vector3.new(0,-55,0) + move
+            else
+                game.Players.LocalPlayer.Character.Humanoid.RootPart.Velocity = Vector3.new(0,2,0) + move
+            end
+            game:GetService("RunService").Heartbeat:wait()
+        end
+    end
+ })
+
+ Section1:Slider({
+    Text = "Fly Speed",
+    Minimum = 10,
+    Default = 10,
+    Maximum = 100,
+    Postfix = "%",
+    Callback = function(Value)
+        _G.Speeed = Value
+    end
+ })
